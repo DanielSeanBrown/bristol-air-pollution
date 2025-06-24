@@ -1,0 +1,23 @@
+# DMF Assessment Report
+### Component 1
+Building the ER model saw me normalise the data by creating separate tables for constituencies, site locations and the sites to eliminate transitive dependencies. Having spent some time digesting the dataset, I decided on using floats for the majority of measurements as this enables an appropriate level of accuracy. I had some real issues deciding on how to best structure the recorded data, but it seemed logical that the detectors would not record transitively redundant data, so I opted to use a single table with each measurement being one row. These rows could then be mapped as a many to one relationship to the sites through the site ID foreign key. On investigating the dataset further I was also troubled by the ObjectID and ObjectID2 fields with these having no clear purpose, they are included in the model regardless to make it “no loss”.
+### Component 2
+This component was relatively straightforward with few technical errors encountered. I would however see myself revisiting this step as further into the component redesigns of the database meant forward engineering new models. 
+I came to include a cascade update/delete on the one-to-one relationship in the model since each record has a unique correspondence between the two tables. On the other foreign keys cascades were neglected because a change in the parent table does not imply a change in the table in these cases.
+### Component 3
+My initial attempt saw me us the csv library, but I soon switched to pandas - this lending itself better for cropping the data. Here I could use some simple conditional formatting, paying attention to not miss boundary dates, to crop the dataset and then save it as the required zip file.
+### Component 4
+component 4 saw me encounter the most problems during the assessment. I started by testing SQL commands in python and then constructing a function to insert values into each of my 4 tables.
+Moving in the direction of foreign key constraints, once I had inserted the constituencies records, I could then insert the values for site locations. Matching the detector coordinates to the respective Bristol constituency proved a bit laborious, especially paying close attention to the recent Bristol constituency boundary changes.
+ Here I had to return to my ER model for a moment because I experienced insert errors when trying to enter site location records. As longitude and latitude serve as a composite primary key in the table, the selected datatype was causing these values to round in a way that no longer made them unique. To solve this I redesigned the model with decimal datatypes for latitude and longitude, which ensure no data loss and made the coordinates work effectively as a primary key.
+Moving on to the final table, I had various issues with the cropped data. First I had to reformat the date time values to be valid with my insert commands and then issue arose around null values. After extensive experimenting and redesigns of my python function, null values would now be recognised as needing extra reformatting and the insert command would be rebuilt specially for these cases automatically.
+### Component 5
+This component saw me implement SQL queries on my data with my biggest hurdle being filtering to rush hour in the second part. I realised however that measurements are taken hourly, so there is little use in looking for records half an hour either side of 8 AM - I instead opted to select records between 7AM and 9AM, thus capturing 3 readings.
+### Component 6
+With this component being weighted the most marks, I retrospectively regret not spending as much time here as I did on component 4. This component is discussed in its own dedicated report, but in the wider context of the assessment I would say I encountered the most new material here. This certainly saw my knowledge of NoSQL databases (especially MongoDB) and JSON/XML expand.
+### Learning Outcomes
+Through the construction and then forward engineering of an ER model, I learnt how to design, develop and implement a data schema and model. Moreover, my python csv inserts and SQL queries and demonstrated that I can use the model for data storage and retrieval. In component 5 and to some extent in component 6 I also showed that I can understand and apply a range of data queries and frameworks. In components 3 and 4 I demonstrated my ability to crop and clean data. My issues with null values and date time formats also showed that I have learnt to format data for data storage.
+### Conclusion
+Challenging but rewarding, the assessment was a great opportunity to implement and further develop what I have learnt over the course of the module.
+
+(Word Count: 798) 
